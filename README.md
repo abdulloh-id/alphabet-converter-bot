@@ -1,6 +1,4 @@
-(This is a toy experiment. The performance is bad. You should use something else.)
+# This is a derivative work. You can find the original author and repository here on GitHub.
 
-#uzbek-transliterator
-
-Transliterate Cyrillic Uzbek text to Latin and vice versa.
+With the help of this bot, you can convert Uzbek Latin text to Uzbek Cyrillic and vice versa.
 https://uz.wikipedia.org/wiki/Vikipediya:O%CA%BBzbek_lotin_alifbosi_qoidalari
