@@ -1336,8 +1336,16 @@ def to_cyrillic(text):
         flags=re.U
     )
 
-    return text
+    # Keep usernames in latin alphabet
+    username_pattern = r'(?<!\w)@[\w_]+'
+    usernames = re.findall(username_pattern, text)
 
+    if usernames:
+        for username in usernames:
+            latin_username = to_latin(username)
+        text = re.sub(username_pattern, latin_username, text)
+
+    return text
 
 def to_latin(text):
     """Transliterates cyrillic text to latin using the following rules:
@@ -1390,11 +1398,11 @@ def to_latin(text):
         text,
         flags=re.U
     )
-    
-    uppercase_pattern = r'\b[A-Z]+\b'  # Matches uppercase words
-    uppercase_words = re.findall(uppercase_pattern, text)
-
-    result = [word.upper() for word in uppercase_words if any(substring in word for substring in ["Ye", "Ya", "Yu", "Yo"])]
+ 
+    # Find and fix the words with troublesome patterns containing Ya, Yu, Ye, Yo
+    uppercase_pattern = r"\b[A-Z]+(?:Ya|Yu|Ye|Yo)[A-Z]*\b"
+    matches = re.findall(uppercase_pattern, text)
+    text = re.sub(uppercase_pattern, lambda matches: matches.group(0).upper(), text)
 
     return text
 
