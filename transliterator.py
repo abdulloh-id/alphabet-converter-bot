@@ -1215,7 +1215,6 @@ CYRILLIC_VOWELS = (
     'ю', 'Ю', 'я', 'Я', 'ў', 'Ў'
 )
 
-
 def to_cyrillic(text):
     """Transliterates latin text to cyrillic  using the following rules:
     1. ye = е in the beginning of a word or after a vowel
@@ -1336,14 +1335,39 @@ def to_cyrillic(text):
         flags=re.U
     )
 
-    # Keep usernames in latin alphabet
+    # Keeping usernames in latin alphabet
     username_pattern = r'(?<!\w)@[\w_]+'
     usernames = re.findall(username_pattern, text)
-
     if usernames:
         for username in usernames:
-            latin_username = to_latin(username)
-        text = re.sub(username_pattern, latin_username, text)
+            for i in range(len(usernames)):
+                text = re.sub(username_pattern, lambda match: to_latin(match.group()), text, count=i)
+
+    # Keeping emails in latin alphabet
+    email_pattern = r'[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+'
+    emails = re.findall(email_pattern, text)
+    if emails:
+        for email in emails:
+            for e in range(len(emails)):
+                text = re.sub(email_pattern, lambda match: to_latin(match.group()), text, count=e)
+
+    # Keeping website names in latin alphabet
+    website_pattern = r'(?:ҳттпс?://)?\b\w+(?:\.\w{2,})+\b'                                                 #r'\b\w+(?:\.\w{2,})+\b'
+    website_names = re.findall(website_pattern, text)
+
+    if website_names:    
+        for website in website_names:
+            for j in range(len(website_names)):
+                text = re.sub(website_pattern, lambda match: to_latin(match.group()), text, count=j)
+        
+        sub_pattern = r"(/[^/]+)?"
+        sub_names = re.findall(sub_pattern, text)
+        if sub_pattern:
+            for sub in sub_names:
+                for j in range(len(sub_names)):
+                    text = re.sub(sub_pattern, lambda match: to_latin(match.group()), text, count=j)
+    else:
+        print("Vebsaytlar uchun bunday andaza topilmadi!")
 
     return text
 
