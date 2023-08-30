@@ -1352,22 +1352,18 @@ def to_cyrillic(text):
                 text = re.sub(email_pattern, lambda match: to_latin(match.group()), text, count=e)
 
     # Keeping website names in latin alphabet
-    website_pattern = r'(?:ҳттпс?://)?\b\w+(?:\.\w{2,})+\b'                                                 #r'\b\w+(?:\.\w{2,})+\b'
+    website_pattern =  r'(?:ҳттпс?://)?\b\w+(?:\.\w{2,})+(?:/\w+)*(?:/\w+\.\w+)?(?:\.ҳтмл)?\b'
     website_names = re.findall(website_pattern, text)
 
     if website_names:    
         for website in website_names:
             for j in range(len(website_names)):
                 text = re.sub(website_pattern, lambda match: to_latin(match.group()), text, count=j)
-        
-        sub_pattern = r"(/[^/]+)?"
-        sub_names = re.findall(sub_pattern, text)
-        if sub_pattern:
-            for sub in sub_names:
-                for j in range(len(sub_names)):
-                    text = re.sub(sub_pattern, lambda match: to_latin(match.group()), text, count=j)
-    else:
-        print("Vebsaytlar uchun bunday andaza topilmadi!")
+    
+    # Handling small softsigns in uppercase words
+    uppercase_pattern = r"((?:^|\b)[А-Яъь]+\b)"
+    matches = re.findall(uppercase_pattern, text)
+    text = re.sub(uppercase_pattern, lambda matches: matches.group().upper(), text)
 
     return text
 
@@ -1424,7 +1420,7 @@ def to_latin(text):
     )
  
     # Find and fix the words with troublesome patterns containing Ya, Yu, Ye, Yo
-    uppercase_pattern = r"\b[A-Z]+(?:Ya|Yu|Ye|Yo)[A-Z]*\b"
+    uppercase_pattern = r"((?:^|\b)[A-Zʼ]+(?:Ya|Yu|Ye|Yo)+\b)"
     matches = re.findall(uppercase_pattern, text)
     text = re.sub(uppercase_pattern, lambda matches: matches.group(0).upper(), text)
 

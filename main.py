@@ -40,7 +40,6 @@ def is_cyrillic(text):
 async def convert(message: types.Message):
     text = message.text
     if (is_latin(text) and has_latin_and_emojis(text)) or not is_cyrillic(text):
-
         result = to_cyrillic(text)
     else:
         result = to_latin(text)
