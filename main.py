@@ -3,10 +3,13 @@ from config import BOT_TOKEN
 from transliterator import to_cyrillic, to_latin
 import unicodedata
 import re
+import os
+
 import logging
 
 logging.basicConfig(level=logging.INFO)
 
+BOT_TOKEN = os.getenv("BOT_TOKEN")
 bot = Bot(token=BOT_TOKEN, parse_mode="html")
 dp = Dispatcher(bot)
 
