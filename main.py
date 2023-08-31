@@ -8,9 +8,20 @@ import logging
 
 logging.basicConfig(level=logging.INFO)
 
+class BotSingleton:
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if not cls._instance:
+            cls._instance = super().__new__(cls)
+            cls._instance.bot = Bot(token=BOT_TOKEN, parse_mode="html")
+            cls._instance.dp = Dispatcher(cls._instance.bot)
+        return cls._instance
+
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-bot = Bot(token=BOT_TOKEN, parse_mode="html")
-dp = Dispatcher(bot)
+bot_singleton = BotSingleton()
+bot = bot_singleton.bot
+dp = bot_singleton.dp
 
 @dp.message_handler(commands=['start', 'help'])
 async def send_welcome(message: types.Message):
