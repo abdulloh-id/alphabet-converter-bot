@@ -58,3 +58,4 @@ config.py
 
 # Test files
 *test.py
+tests/
