@@ -1,5 +1,4 @@
 from aiogram import Bot, Dispatcher, executor, types
-from config import BOT_TOKEN
 from transliterator import to_cyrillic, to_latin
 import unicodedata
 import re
