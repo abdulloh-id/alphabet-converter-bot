@@ -8,20 +8,16 @@ import logging
 
 logging.basicConfig(level=logging.INFO)
 
-class BotSingleton:
-    _instance = None
-
-    def __new__(cls, *args, **kwargs):
-        if not cls._instance:
-            cls._instance = super().__new__(cls)
-            cls._instance.bot = Bot(token=BOT_TOKEN, parse_mode="html")
-            cls._instance.dp = Dispatcher(cls._instance.bot)
-        return cls._instance
-
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-bot_singleton = BotSingleton()
-bot = bot_singleton.bot
-dp = bot_singleton.dp
+bot = Bot(BOT_TOKEN)
+dp = Dispatcher(bot)
+
+async def convert_main(text):
+    if (is_latin(text) and has_latin_and_emojis(text)) or not is_cyrillic(text):
+        result = to_cyrillic(text)
+    else:
+        result = to_latin(text)
+    return result
 
 @dp.message_handler(commands=['start', 'help'])
 async def send_welcome(message: types.Message):
@@ -52,12 +48,16 @@ def is_cyrillic(text):
 @dp.message_handler()
 async def convert(message: types.Message):
     text = message.text
-    if (is_latin(text) and has_latin_and_emojis(text)) or not is_cyrillic(text):
-        result = to_cyrillic(text)
-    else:
-        result = to_latin(text)
-
+    result = await convert_main(text)
     await message.reply(result)
+
+@dp.message_handler(content_types=types.ContentType.PHOTO)
+async def handle_captions(message: types.Message):
+    new_caption = await convert_main(message.caption)
+    await bot.send_photo(
+      chat_id=message.chat.id,
+      photo=message.photo[-1].file_id,
+      caption=new_caption)
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
