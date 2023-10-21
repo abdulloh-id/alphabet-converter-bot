@@ -62,17 +62,25 @@ async def handle_captions(message: types.Message):
 @dp.message_handler(content_types=types.ContentType.VIDEO)
 async def handle_captions(message: types.Message):
     new_caption = await convert_main(message.caption)
-    await bot.send_photo(
+    await bot.send_video(
       chat_id=message.chat.id,
-      photo=message.video[-1].file_id,
+      video=message.video.file_id,
       caption=new_caption)
 
 @dp.message_handler(content_types=types.ContentType.AUDIO)
 async def handle_captions(message: types.Message):
     new_caption = await convert_main(message.caption)
-    await bot.send_photo(
+    await bot.send_audio(
       chat_id=message.chat.id,
-      photo=message.audio[-1].file_id,
+      audio=message.audio.file_id,
+      caption=new_caption)
+
+@dp.message_handler(content_types=types.ContentType.DOCUMENT)
+async def handle_document_captions(message: types.Message):
+    new_caption = await convert_main(message.caption)
+    await bot.send_document(
+      chat_id=message.chat.id,
+      document=message.document.file_id,
       caption=new_caption)
 
 if __name__ == '__main__':
