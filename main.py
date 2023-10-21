@@ -3,11 +3,11 @@ from transliterator import to_cyrillic, to_latin
 import unicodedata
 import re
 import os
-
 import logging
 
 logging.basicConfig(level=logging.INFO)
 
+#BOT_TOKEN = os.environ.get("BOT_TOKEN")
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 bot = Bot(BOT_TOKEN)
 dp = Dispatcher(bot)
@@ -57,6 +57,22 @@ async def handle_captions(message: types.Message):
     await bot.send_photo(
       chat_id=message.chat.id,
       photo=message.photo[-1].file_id,
+      caption=new_caption)
+
+@dp.message_handler(content_types=types.ContentType.VIDEO)
+async def handle_captions(message: types.Message):
+    new_caption = await convert_main(message.caption)
+    await bot.send_photo(
+      chat_id=message.chat.id,
+      photo=message.video[-1].file_id,
+      caption=new_caption)
+
+@dp.message_handler(content_types=types.ContentType.AUDIO)
+async def handle_captions(message: types.Message):
+    new_caption = await convert_main(message.caption)
+    await bot.send_photo(
+      chat_id=message.chat.id,
+      photo=message.audio[-1].file_id,
       caption=new_caption)
 
 if __name__ == '__main__':
