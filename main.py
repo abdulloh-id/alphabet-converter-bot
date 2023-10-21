@@ -7,7 +7,6 @@ import logging
 
 logging.basicConfig(level=logging.INFO)
 
-#BOT_TOKEN = os.environ.get("BOT_TOKEN")
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 bot = Bot(BOT_TOKEN)
 dp = Dispatcher(bot)
